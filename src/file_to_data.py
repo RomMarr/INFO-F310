@@ -1,66 +1,79 @@
 from modelClass import Edge
 from modelClass import Source
 from modelClass import Destination
+from modelClass import Node
 
 
 def file_to_data(fileName):
-    with open(fileName,'r') as file:
-        listEdges = []
-        listSources = []
-        listDestinations = []
-        
-        line = newline(file)
-        numberItems = int(line[1])
-        file.readline()
-        
-        line = newline(file)
-        numberNodes = int(line[1])
-        file.readline()
-        for _ in range(numberNodes+1):
-            file.readline()
-        
-        line = newline(file)
-        numberEdges = int(line[1])
-        file.readline()
-        for _ in range(numberEdges):
-            line = newline(file)
-            start = int(line[1])
-            end = int(line[2])
-            newEdge = Edge(int(line[0]),start,end)
-            for i in range(numberItems):
-                newEdge.add_cost(int(line[i+3]))
-            listEdges.append(newEdge)
-        file.readline()
-
-        line = newline(file)
-        numberSources = int(line[1])
-        file.readline()
-        for _ in range (numberSources):
-            line = newline(file)
-            newSource = Source(line[0])
-            for i in range(numberItems):
-                newSource.add_capacity(int(line[i+1]))
-            listSources.append(newSource)
-        file.readline()
-
-        line = newline(file)
-        numberDestinations = int(line[1])
-        file.readline()
-        for _ in range (numberDestinations):
-            line = newline(file)
-            newDestination = Destination(line[0])
-            for i in range(numberItems):
-                newDestination.add_Demands(int(line[i+1]))
-            listDestinations.append(newDestination)
-    return listEdges,listSources,listDestinations
+    section = splitFileBySections(fileName)
+    return ok(section)
 
 
-        
+def splitFileBySections(fileName):
+    sections = []
+    currentSection = []
+
+    with open(fileName, 'r') as file:
+        for line in file:
+            line = line.strip()  # Remove leading/trailing whitespace
+            if line:  # Non-empty line
+                currentSection.append(line)
+            else:  # Blank line, start a new section
+                if currentSection:
+                    sections.append(currentSection)
+                    currentSection = []
+    # Append the last section
+    if currentSection:
+        sections.append(currentSection)
+    return sections
+
+def ok(sections):
+    for section in sections:
+        print(section)
+    print("______________")
+    nbrItems = int(sections[0][0].split()[1]) # get the element after the space (ex : ITEMS 2 -> nbrItems = 2)
+    listNodes = createNodes(sections[1])
+    listEdges = createEdges(sections[2], nbrItems)
+    updateNodeSources(sections[3], listNodes, nbrItems)
+    updateNodeDestinations(sections[4], listNodes, nbrItems)
+    return listEdges,listNodes
+
+def createNodes(section):
+    listNodes = []
+    for line in section[2:]:
+        splitedLine = line.split()
+        listNodes.append(Node(int(splitedLine[0]),float(splitedLine[1]), float(splitedLine[2])))
+    return listNodes
 
 
+def createEdges(section, nbrItems):
+    listEdges = []
+    for line in section[2:]:
+        splitedLine = line.split()
+        edge = Edge(int(splitedLine[0]),int(splitedLine[1]), int(splitedLine[2]))
+        for i in range(nbrItems):
+            edge.add_cost(int(splitedLine[i+3]))
+        listEdges.append(edge)
+    return listEdges
+
+def updateNodeSources(section, listNodes, nbrItems):
+    for line in section[2:]:
+        splitedLine = line.split()
+        sourceID = int(splitedLine[0])
+        for node in listNodes:
+            if node.getID() == sourceID: 
+                node.changeTypeToSource()
+                for i in range(nbrItems):
+                    node.add_data(-int(splitedLine[i+1]))
 
 
-
-def newline(file):
-    return file.readline().split(' ')
-
+def updateNodeDestinations(section, listNodes, nbrItems):
+    for line in section[2:]:
+        splitedLine = line.split()
+        destinationID = int(splitedLine[0])
+        for node in listNodes:
+            if node.getID() == destinationID: 
+                node.changeTypeToDestination()
+                for i in range(nbrItems):
+                    node.add_data(int(splitedLine[i +1]))
+                

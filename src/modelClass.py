@@ -1,3 +1,4 @@
+
 class Edge :
     
     def __init__(self,id,start,end):
@@ -17,6 +18,52 @@ class Edge :
             sumCost+=cost
         self.averageCost = sumCost/ len(self.listCost)
 
+    def toStringAgg(self):
+        return "E%s_%s_%s" % (self.id,self.start,self.end)
+    
+    def toString(self,i):
+        return "E%s_O%s_%s_%s" % (self.id, i,self.start,self.end)
+    
+    def print(self):
+        print(f"ID: {self.id}, Start: {self.start}, End: {self.end}, ListCost: {self.listCost}, AverageCost: {self.averageCost}")
+
+        
+class Node : 
+    def __init__(self,id,x,y):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.listData = []
+        self.type = "Node"
+
+    def changeTypeToSource(self):
+        self.type = "Source"
+
+    def changeTypeToDestination(self):
+        self.type = "Destination"
+
+    def getID(self):
+        return self.id
+
+    def add_data (self,data):
+        self.listData.append(data)
+    
+    def getTotalCapacity(self):
+        totalCapacity = 0
+        for cap in self.listData:
+            totalCapacity+=cap
+        return totalCapacity
+    
+    def print(self):
+        print(f"{self.type} - ID: {self.id}, X: {self.x}, Y: {self.y}, ListData: {self.listData}")
+
+    def getDataI(self,i):
+        if self.listData == []:
+            return 0
+        else:
+            return self.listData[i]
+
+
 class Source :
 
     def __init__(self,id):
@@ -27,6 +74,7 @@ class Source :
     def add_capacity (self,capacity):
         self.listCapacity.append(capacity)
         self.updateTotalCapacity()
+
 
     def updateTotalCapacity(self):
         self.totalCapacity = 0
