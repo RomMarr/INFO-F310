@@ -1,5 +1,6 @@
 import sys
 import os
+import file_to_data
 
 def isFileInFolder(fileName):
     # Get a list of all files in the folder
@@ -26,6 +27,17 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    instanceName = sys.argv[1]  # instance's file's name
+    instanceName = './instances/' + sys.argv[1]  # instance's file's name
     p = sys.argv[2]  # p parameter
-    main(instanceName, p)
+    listEdges,listSources,listDestinations = file_to_data.file_to_data(instanceName)
+    #main(instanceName, p)
+
+
+def generateAggregateModel(listEdges,listSources,listDestinations) :
+     file = open("myfile.txt", "w") 
+     file.write("Minimize")
+     toOptimize = "obj: "
+     for edge in listEdges:
+         toOptimize.add(to_string(edge.averageCost))
+
+         
