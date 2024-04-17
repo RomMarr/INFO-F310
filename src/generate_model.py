@@ -9,15 +9,16 @@ def isFileInFolder(fileName):
     # Check if the file's name matches any of the files in the folder
     return fileName in filesInFolder
 
-def generateAggregateModel(listEdges,listNode) :
-    file = open("myfile.txt", "w") 
+def generateAggregateModel(listEdges,listNode,fileName) :
+    newFileName = fileName+".lp"
+    file = open(newFileName, "w") 
     file.write("Minimize\n")
     toOptimize = "obj: "
     for edge in listEdges:
         if edge.averageCost >=0:
-            toOptimize += "+ " + str(edge.averageCost) +" " + edge.toStringAgg()
+            toOptimize += "+ " + str(edge.averageCost) +" " + edge.toString()
         else:
-            toOptimize += "- " + str(abs(edge.averageCost)) +" " + edge.toStringAgg()
+            toOptimize += "- " + str(abs(edge.averageCost)) +" " + edge.toString()
     toOptimize = toOptimize.replace("+","",1)
     file.write(toOptimize + "\n")
     file.write("Subject To\n")
@@ -50,8 +51,9 @@ def generateAggregateModel(listEdges,listNode) :
     file.writelines(equaNode)
     file.write("End")
 
-def generateModel(listEdges,listNode) :
-    file = open("myfile.txt", "w") 
+def generateModel(listEdges,listNode, fileName) :
+    newFileName = fileName+".lp"
+    file = open(newFileName, "w")  
     file.write("Minimize\n")
     toOptimize = "obj: "
     nbrObjet = len(listEdges[0].listCost)
@@ -76,17 +78,17 @@ def generateModel(listEdges,listNode) :
             if node.type == "Source" :
                 counterSource+=1
                 equa = "s_%s: " % counterSource
-                equa = writeEqua2(node,equa,listEdges,i)
+                equa = writeEqua(node,equa,listEdges,i)
                 equaSource.append(equa)
             if node.type == "Destination" :
                 counterDestination+=1
                 equa = "d_%s: " % counterDestination
-                equa = writeEqua2(node,equa,listEdges,i)
+                equa = writeEqua(node,equa,listEdges,i)
                 equaDestination.append(equa)
             else :
                 counterNode+=1
                 equa = "n_%s: " % counterNode
-                equa = writeEqua2(node,equa,listEdges,i)
+                equa = writeEqua(node,equa,listEdges,i)
                 equaNode.append(equa)
 
     file.writelines(equaSource)
@@ -94,26 +96,17 @@ def generateModel(listEdges,listNode) :
     file.writelines(equaNode)
     file.write("End")
 
-def writeEqua(node,equa,listEdges):
+def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     for edge in listEdges:
-            if edge.end == node.id :
-                equa += "+ " + edge.toStringAgg()
-            elif edge.start == node.id :
-                equa += "- " + edge.toStringAgg()
-    equa += ">=" + str(node.getTotalCapacity()) + "\n"
-    return equa
-
-def writeEqua2(node,equa,listEdges,i):
-    for edge in listEdges:
-            if edge.end == node.id :
-                equa += "+ " + edge.toString(i)
-            elif edge.start == node.id :
-                equa += "- " + edge.toString(i)
+        edgeName = edge.toString(i)
+        if edge.end == node.id :
+            equa += "+ " + edgeName
+        elif edge.start == node.id :
+            equa += "- " + edgeName
     equa += ">=" + str(node.getDataI(i)) + "\n"
     return equa
 
          
-
 
 
 def main(instanceName, p):
@@ -122,19 +115,20 @@ def main(instanceName, p):
     if False:
         pass
     else: 
-        listEdges,listNodes = file_to_data.file_to_data(instanceName)
-        for elem in listEdges:
-            elem.print()
-        for elem in listNodes:
-            elem.print()
-        #debug ta partie je fais les print mtn 
+        listEdges,listNodes = file_to_data.fileToData('./instances/' +instanceName)
+        resultFile = instanceName [:-4] 
+        print(resultFile)
+        #for elem in listEdges:
+        #    elem.print()
+        #for elem in listNodes:
+        #    elem.print()
         p = int(p)  # Convert p to an integer
         if p == 0:
             print("p is 0")
-            generateAggregateModel(listEdges,listNodes)
+            generateAggregateModel(listEdges,listNodes, resultFile)
         elif p ==1:
             print("p is 1")
-            generateModel(listEdges,listNodes)
+            generateModel(listEdges,listNodes, resultFile)
         else:  # P parameter does not match the expected values
             raise ValueError("Parameter p must be 0 or 1")
 
@@ -142,6 +136,6 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    instanceName = './instances/' + sys.argv[1]  # instance's file's name
+    instanceName = sys.argv[1]  # instance's file's name
     p = sys.argv[2]  # p parameter
     main(instanceName, p)

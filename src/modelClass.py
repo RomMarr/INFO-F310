@@ -17,13 +17,14 @@ class Edge :
         for cost in self.listCost:
             sumCost+=cost
         self.averageCost = sumCost/ len(self.listCost)
+        
+    
+    def toString(self,i=None): # i == None when no i parameter is given -> i == nbrItems
+        if i == None:
+            return "E%s_%s_%s" % (self.id,self.start,self.end)
+        else : 
+            return "E%s_O%s_%s_%s" % (self.id, i,self.start,self.end)
 
-    def toStringAgg(self):
-        return "E%s_%s_%s" % (self.id,self.start,self.end)
-    
-    def toString(self,i):
-        return "E%s_O%s_%s_%s" % (self.id, i,self.start,self.end)
-    
     def print(self):
         print(f"ID: {self.id}, Start: {self.start}, End: {self.end}, ListCost: {self.listCost}, AverageCost: {self.averageCost}")
 
@@ -57,11 +58,14 @@ class Node :
     def print(self):
         print(f"{self.type} - ID: {self.id}, X: {self.x}, Y: {self.y}, ListData: {self.listData}")
 
-    def getDataI(self,i):
-        if self.listData == []:
+    def getDataI(self,i = None):
+        if i == None:
+            return self.getTotalCapacity()
+        elif self.listData == []:
             return 0
         else:
             return self.listData[i]
+        
 
 
 class Source :

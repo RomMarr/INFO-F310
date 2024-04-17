@@ -4,9 +4,9 @@ from modelClass import Destination
 from modelClass import Node
 
 
-def file_to_data(fileName):
+def fileToData(fileName):
     section = splitFileBySections(fileName)
-    return ok(section)
+    return sectionToData(section)
 
 
 def splitFileBySections(fileName):
@@ -27,7 +27,7 @@ def splitFileBySections(fileName):
         sections.append(currentSection)
     return sections
 
-def ok(sections):
+def sectionToData(sections):
     for section in sections:
         print(section)
     print("______________")
