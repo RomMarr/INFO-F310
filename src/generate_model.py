@@ -35,7 +35,7 @@ def generateAggregateModel(listEdges,listNode,fileName) :
             equa = "s_%s: " % counterSource
             equa = writeEqua(node,equa,listEdges)
             equaSource.append(equa)
-        if node.type == "Destination" :
+        elif node.type == "Destination" :
             counterDestination+=1
             equa = "d_%s: " % counterDestination
             equa = writeEqua(node,equa,listEdges)
@@ -80,7 +80,7 @@ def generateModel(listEdges,listNode, fileName) :
                 equa = "s_%s: " % counterSource
                 equa = writeEqua(node,equa,listEdges,i)
                 equaSource.append(equa)
-            if node.type == "Destination" :
+            elif node.type == "Destination" :
                 counterDestination+=1
                 equa = "d_%s: " % counterDestination
                 equa = writeEqua(node,equa,listEdges,i)
@@ -99,10 +99,11 @@ def generateModel(listEdges,listNode, fileName) :
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     for edge in listEdges:
         edgeName = edge.toString(i)
-        if edge.end == node.id :
-            equa += "+ " + edgeName
-        elif edge.start == node.id :
-            equa += "- " + edgeName
+        if edge.start != edge.end:
+            if edge.end == node.id :
+                equa += "+ " + edgeName
+            elif edge.start == node.id :
+                equa += "- " + edgeName
     equa += ">=" + str(node.getDataI(i)) + "\n"
     return equa
 
@@ -133,9 +134,17 @@ def main(instanceName, p):
             raise ValueError("Parameter p must be 0 or 1")
 
 
+def testTout(p):
 
+    root = "./instances/"
+    for path, subdir, files in os.walk(root):
+        for name in files:
+            print(name)
+            main(name, p)
 
 if __name__ == '__main__':
     instanceName = sys.argv[1]  # instance's file's name
     p = sys.argv[2]  # p parameter
-    main(instanceName, p)
+    testTout(p)
+    #main(instanceName, p)
+
