@@ -6,7 +6,6 @@ import Automatisation as auto
 def isFileInFolder(fileName):
     # Get a list of all files in the folder
     filesInFolder = os.listdir("instances")
-
     # Check if the file's name matches any of the files in the folder
     return fileName in filesInFolder
 
