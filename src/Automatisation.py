@@ -39,6 +39,7 @@ def convertToSol(directory):
     """
     for filename in sorted(os.listdir(directory)):
         if filename.endswith(".lp"):
+            print("Solving LP file:", filename)
             lp_file = os.path.join(directory, filename)
             sol_file = os.path.splitext(lp_file)[0] + ".sol"
             solve_lp_file(lp_file, sol_file)
@@ -63,13 +64,5 @@ def testTout():
     root = "./instances/"
     for path, subdir, files in os.walk(root):
         for name in files:
-            print(name)
             main(name, 0)
-            time.sleep(1)
-            print("-----------------")
-            print("Name 1 incoming")
-            print("-----------------")
-            time.sleep(1)
             main(name, 1)
-            print("-----------------")
-            print("Done")

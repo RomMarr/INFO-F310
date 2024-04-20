@@ -11,7 +11,7 @@ def isFileInFolder(fileName):
     return fileName in filesInFolder
 
 def generateAggregateModel(listEdges,listNode,fileName) :
-    newFileName = fileName+".lp"
+    newFileName = fileName+"_0.lp"
     file = open(newFileName, "w") 
     file.write("Minimize\n")
     toOptimize = "obj: "
@@ -53,7 +53,7 @@ def generateAggregateModel(listEdges,listNode,fileName) :
     file.write("End")
 
 def generateModel(listEdges,listNode, fileName) :
-    newFileName = fileName+".lp"
+    newFileName = fileName+"_1.lp"
     file = open(newFileName, "w")  
     file.write("Minimize\n")
     toOptimize = "obj: "
@@ -130,10 +130,10 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    instanceName = sys.argv[1]  # instance's file's name
-    p = sys.argv[2]  # p parameter
-    #auto.testTout()
-    #auto.convertToSol("./instances")
-    #auto.showResults()
-    main(instanceName, p)
+    #instanceName = sys.argv[1]  # instance's file's name
+    #p = sys.argv[2]  # p parameter
+    auto.testTout()
+    auto.convertToSol("./")
+    auto.showResults()
+    #main(instanceName, p)
 
