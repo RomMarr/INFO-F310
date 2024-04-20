@@ -1,7 +1,6 @@
 import os
 import subprocess
 from generate_model import main
-import time
 
 
 directory = ''
