@@ -136,5 +136,6 @@ if __name__ == '__main__':
     p = sys.argv[2]  # p parameter
     auto.testTout()
     auto.convertToSol("./instances")
+    auto.showResults()
     #main(instanceName, p)
 

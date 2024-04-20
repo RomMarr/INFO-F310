@@ -1,6 +1,7 @@
 import os
 import subprocess
 from generate_model import main
+import time
 
 
 directory = ''
@@ -63,5 +64,12 @@ def testTout():
     for path, subdir, files in os.walk(root):
         for name in files:
             print(name)
-            main(name, O)
+            main(name, 0)
+            time.wait(1)
+            print("-----------------")
+            print("Name 1 incoming")
+            print("-----------------")
+            time.wait(1)
             main(name, 1)
+            print("-----------------")
+            print("Done")
