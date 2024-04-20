@@ -6,7 +6,6 @@ import Automatisation as auto
 def isFileInFolder(fileName):
     # Get a list of all files in the folder
     filesInFolder = os.listdir("instances")
-
     # Check if the file's name matches any of the files in the folder
     return fileName in filesInFolder
 
@@ -16,10 +15,10 @@ def generateAggregateModel(listEdges,listNode,fileName) :
     file.write("Minimize\n")
     toOptimize = "obj: "
     for edge in listEdges:
-        if edge.averageCost >=0:
-            toOptimize += "+ " + str(edge.averageCost) +" " + edge.toString()
+        if edge.medianCost >=0:
+            toOptimize += "+ " + str(edge.medianCost) +" " + edge.toString()
         else:
-            toOptimize += "- " + str(abs(edge.averageCost)) +" " + edge.toString()
+            toOptimize += "- " + str(abs(edge.medianCost)) +" " + edge.toString()
     toOptimize = toOptimize.replace("+","",1)
     file.write(toOptimize + "\n")
     file.write("Subject To\n")

@@ -1,6 +1,4 @@
 from modelClass import Edge
-from modelClass import Source
-from modelClass import Destination
 from modelClass import Node
 
 
