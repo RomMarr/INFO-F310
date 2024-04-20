@@ -65,11 +65,11 @@ def testTout():
         for name in files:
             print(name)
             main(name, 0)
-            time.wait(1)
+            time.sleep(1)
             print("-----------------")
             print("Name 1 incoming")
             print("-----------------")
-            time.wait(1)
+            time.sleep(1)
             main(name, 1)
             print("-----------------")
             print("Done")

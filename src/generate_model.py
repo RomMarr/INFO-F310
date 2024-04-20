@@ -112,10 +112,8 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
 
 
 def main(instanceName, p):
-    #if not isFileInFolder("./instances/" + instanceName):  # Check if the file exists in the instances folder
-    #    raise ValueError("File name does not exist in instances folder")
-    if False:
-        pass
+    if not os.path.exists('./instances/' + instanceName):   # Check if the file exists in the instances folder
+        raise ValueError("File name does not exist in instances folder")
     else: 
         listEdges,listNodes = file_to_data.fileToData('./instances/' +instanceName)
         resultFile = instanceName [:-4] 
@@ -134,8 +132,8 @@ def main(instanceName, p):
 if __name__ == '__main__':
     instanceName = sys.argv[1]  # instance's file's name
     p = sys.argv[2]  # p parameter
-    auto.testTout()
-    auto.convertToSol("./instances")
-    auto.showResults()
-    #main(instanceName, p)
+    #auto.testTout()
+    #auto.convertToSol("./instances")
+    #auto.showResults()
+    main(instanceName, p)
 
