@@ -1,3 +1,4 @@
+from statistics import median
 class Edge :
     def __init__(self,id,start,end):
         self.id = id
@@ -14,7 +15,7 @@ class Edge :
         sumCost = 0
         for cost in self.listCost:
             sumCost+=cost
-        self.averageCost = sumCost/ len(self.listCost)
+        self.medianCost = median(self.listCost)
         
     
     def toString(self,i=None): # i == None when no i parameter is given -> i == nbrItems
