@@ -1,6 +1,7 @@
 import sys
 import os
 import file_to_data
+import Automatisation as auto
 
 def isFileInFolder(fileName):
     # Get a list of all files in the folder
@@ -119,10 +120,6 @@ def main(instanceName, p):
         listEdges,listNodes = file_to_data.fileToData('./instances/' +instanceName)
         resultFile = instanceName [:-4] 
         print(resultFile)
-        #for elem in listEdges:
-        #    elem.print()
-        #for elem in listNodes:
-        #    elem.print()
         p = int(p)  # Convert p to an integer
         if p == 0:
             print("p is 0")
@@ -134,17 +131,10 @@ def main(instanceName, p):
             raise ValueError("Parameter p must be 0 or 1")
 
 
-def testTout(p):
-
-    root = "./instances/"
-    for path, subdir, files in os.walk(root):
-        for name in files:
-            print(name)
-            main(name, p)
-
 if __name__ == '__main__':
     instanceName = sys.argv[1]  # instance's file's name
     p = sys.argv[2]  # p parameter
-    testTout(p)
+    auto.testTout()
+    auto.convertToSol("./instances")
     #main(instanceName, p)
 
