@@ -1,6 +1,7 @@
 import sys
 import os
 import file_to_data
+import Automatisation as auto
 
 def isFileInFolder(fileName):
     # Get a list of all files in the folder
@@ -10,7 +11,7 @@ def isFileInFolder(fileName):
     return fileName in filesInFolder
 
 def generateAggregateModel(listEdges,listNode,fileName) :
-    newFileName = fileName+".lp"
+    newFileName = fileName+"_0.lp"
     file = open(newFileName, "w") 
     file.write("Minimize\n")
     toOptimize = "obj: "
@@ -52,7 +53,7 @@ def generateAggregateModel(listEdges,listNode,fileName) :
     file.write("End")
 
 def generateModel(listEdges,listNode, fileName) :
-    newFileName = fileName+".lp"
+    newFileName = fileName+"_1.lp"
     file = open(newFileName, "w")  
     file.write("Minimize\n")
     toOptimize = "obj: "
@@ -111,18 +112,12 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
 
 
 def main(instanceName, p):
-    #if not isFileInFolder("./instances/" + instanceName):  # Check if the file exists in the instances folder
-    #    raise ValueError("File name does not exist in instances folder")
-    if False:
-        pass
+    if not os.path.exists('./instances/' + instanceName):   # Check if the file exists in the instances folder
+        raise ValueError("File name does not exist in instances folder")
     else: 
         listEdges,listNodes = file_to_data.fileToData('./instances/' +instanceName)
         resultFile = instanceName [:-4] 
         print(resultFile)
-        #for elem in listEdges:
-        #    elem.print()
-        #for elem in listNodes:
-        #    elem.print()
         p = int(p)  # Convert p to an integer
         if p == 0:
             print("p is 0")
@@ -134,17 +129,11 @@ def main(instanceName, p):
             raise ValueError("Parameter p must be 0 or 1")
 
 
-def testTout(p):
-
-    root = "./instances/"
-    for path, subdir, files in os.walk(root):
-        for name in files:
-            print(name)
-            main(name, p)
-
 if __name__ == '__main__':
-    instanceName = sys.argv[1]  # instance's file's name
-    p = sys.argv[2]  # p parameter
-    testTout(p)
+    #instanceName = sys.argv[1]  # instance's file's name
+    #p = sys.argv[2]  # p parameter
+    auto.testTout()
+    auto.convertToSol("./")
+    auto.showResults()
     #main(instanceName, p)
 
