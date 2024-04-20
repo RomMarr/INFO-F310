@@ -5,13 +5,13 @@ class Edge :
         self.start = start
         self.end = end
         self.listCost = []
-        self.averageCost = 0
+        self.medianCost = 0
     
     def add_cost(self,costItem):
         self.listCost.append(costItem)
-        self.updateAverageCost()
+        self.updateMedianCost()
     
-    def updateAverageCost(self):
+    def updateMedianCost(self):
         sumCost = 0
         for cost in self.listCost:
             sumCost+=cost
@@ -25,7 +25,7 @@ class Edge :
             return "E%s_O%s_%s_%s" % (self.id, i,self.start,self.end)
 
     def print(self):
-        print(f"ID: {self.id}, Start: {self.start}, End: {self.end}, ListCost: {self.listCost}, AverageCost: {self.averageCost}")
+        print(f"ID: {self.id}, Start: {self.start}, End: {self.end}, ListCost: {self.listCost}, MedianCost: {self.medianCost}")
 
         
 class Node : 
