@@ -30,12 +30,6 @@ def showResults():
                     "Filename: ", filename + bcolors.ENDC + " " + lines[5], end="")
                 
 def convertToSol(directory):
-    """
-    Convert all LP files in the specified directory to solution files using glpsol.
-    
-    Args:
-        directory (str): The path to the directory containing LP files.
-    """
     for filename in sorted(os.listdir(directory)):
         if filename.endswith(".lp"):
             print("Solving LP file:", filename)
@@ -45,13 +39,6 @@ def convertToSol(directory):
             print(f"Solution saved to '{sol_file}'.")
 
 def solve_lp_file(lp_file, sol_file):
-    """
-    Solve an LP file using glpsol and save the solution to a file.
-    
-    Args:
-        lp_file (str): The path to the LP file.
-        sol_file (str): The path to save the solution file.
-    """
     # Construct the command
     command = ["glpsol", "--lp", lp_file, "-o", sol_file]
     
