@@ -127,6 +127,7 @@ def generateObjective(listEdges, variant):
     Returns:
         str: The objective function string.
     """
+    print("Generating objective function...")
     to_optimize = "obj: "
     nbr_objet = len(listEdges[0].listCost) if variant == 1 else 1
     
@@ -138,6 +139,7 @@ def generateObjective(listEdges, variant):
             else:
                 to_optimize += f"- {abs(cost)} {edge.toString(i)}"
     
+    print("Objective function:", to_optimize)
     return to_optimize.replace("+ ", "", 1)  # Adjusted replace function
 
 
@@ -153,6 +155,7 @@ def generateSubjectTo(listNode, listEdges, variant):
     Returns:
         list: List of subject to constraints.
     """
+    print("Generating subject to constraints...")
     counter_node = 0
     counter_source = 0
     counter_destination = 0
@@ -181,6 +184,7 @@ def generateSubjectTo(listNode, listEdges, variant):
             else:
                 equa_node.append(equa)
     
+    print("Subject to constraints generated.")
     return equa_source + equa_destination + equa_node
 
 
@@ -195,6 +199,7 @@ def generateModel(listEdges, listNode, fileName, variant=0):
         variant (int): Variant of the model to generate. 
                        0 for aggregate model, 1 for regular model.
     """
+    print("Generating LP model...")
     new_file_name = f"{fileName}_{variant}.lp"
     with open(new_file_name, "w") as file:
         file.write("Minimize\n")
@@ -202,6 +207,8 @@ def generateModel(listEdges, listNode, fileName, variant=0):
         file.write("Subject To\n")
         file.writelines(generateSubjectTo(listNode, listEdges, variant))
         file.write("End")
+    print("LP model generated.")
+
 
 
 
