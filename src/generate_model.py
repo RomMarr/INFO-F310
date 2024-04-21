@@ -20,65 +20,8 @@ def generateAggregateModel(listEdges,listNode,fileName, p) :
     toOptimize = toOptimize.replace("+","",1)
     file.write(toOptimize + "\n")
     file.write("Subject To\n")
-    
-    # counterNode = 0
-    # counterSource = 0
-    # counterDestination = 0
-    # equaNode = []
-    # equaSource = []
-    # equaDestination = []
-    # for node in listNode:
-    #     if node.type == "Source" :
-    #         counterSource+=1
-    #         equa = "s_%s: " % counterSource
-    #         equa = writeEqua(node,equa,listEdges)
-    #         equaSource.append(equa)
-    #     elif node.type == "Destination" :
-    #         counterDestination+=1
-    #         equa = "d_%s: " % counterDestination
-    #         equa = writeEqua(node,equa,listEdges)
-    #         equaDestination.append(equa)
-    #     else :
-    #         counterNode+=1
-    #         equa = "n_%s: " % counterNode
-    #         equa = writeEqua(node,equa,listEdges)
-    #         equaNode.append(equa)
-
-
-    # counter_node = 0
-    # counter_source = 0
-    # counter_destination = 0
-    # equa_node = []
-    # equa_source = []
-    # equa_destination = []
-    
-    # for node in listNode:
-    #     for i in range(1):
-    #         if node.type == "Source":
-    #             counter_source += 1
-    #             equa = f"s_{counter_source}: "
-    #         elif node.type == "Destination":
-    #             counter_destination += 1
-    #             equa = f"d_{counter_destination}: "
-    #         else:
-    #             counter_node += 1
-    #             equa = f"n_{counter_node}: "
-                
-    #         equa = writeEqua(node, equa, listEdges)
-            
-    #         if node.type == "Source":
-    #             equa_source.append(equa)
-    #         elif node.type == "Destination":
-    #             equa_destination.append(equa)
-    #         else:
-    #             equa_node.append(equa)
-
-
-    # file.writelines(equa_source)
-    # file.writelines(equa_destination)
-    # file.writelines(equa_node)
-    # file.write("End")
     equaSource, equaDestination, equaNode = generateSubjectTo(listNode, listEdges, p)
+
     file.writelines(equaSource)
     file.writelines(equaDestination)
     file.writelines(equaNode)
@@ -100,64 +43,8 @@ def generateModel(listEdges,listNode, fileName, p) :
     file.write(toOptimize + "\n")
     file.write("Subject To\n")
     
-#     counterNode = 0
-#     counterSource = 0
-#     counterDestination = 0
-#     equaNode = []
-#     equaSource = []
-#     equaDestination = []
-#     for node in listNode:
-#         for i in range(nbrObjet):
-#             if node.type == "Source" :
-#                 counterSource+=1
-#                 equa = "s_%s: " % counterSource
-#                 equa = writeEqua(node,equa,listEdges,i)
-#                 equaSource.append(equa)
-#             elif node.type == "Destination" :
-#                 counterDestination+=1
-#                 equa = "d_%s: " % counterDestination
-#                 equa = writeEqua(node,equa,listEdges,i)
-#                 equaDestination.append(equa)
-#             else :
-#                 counterNode+=1
-#                 equa = "n_%s: " % counterNode
-#                 equa = writeEqua(node,equa,listEdges,i)
-#                 equaNode.append(equa)
-
-
-    # counter_node = 0
-    # counter_source = 0
-    # counter_destination = 0
-    # equa_node = []
-    # equa_source = []
-    # equa_destination = []
-    
-    # for node in listNode:
-    #     for i in range(len(listEdges[0].listCost)):
-    #         if node.type == "Source":
-    #             counter_source += 1
-    #             equa = f"s_{counter_source}: "
-    #         elif node.type == "Destination":
-    #             counter_destination += 1
-    #             equa = f"d_{counter_destination}: "
-    #         else:
-    #             counter_node += 1
-    #             equa = f"n_{counter_node}: "
-                
-    #         equa = writeEqua(node, equa, listEdges, i)
-            
-    #         if node.type == "Source":
-    #             equa_source.append(equa)
-    #         elif node.type == "Destination":
-    #             equa_destination.append(equa)
-    #         else:
-    #             equa_node.append(equa)
-
-    # file.writelines(equa_source)
-    # file.writelines(equa_destination)
-    # file.writelines(equa_node)
-    # file.write("End")
     equaSource, equaDestination, equaNode = generateSubjectTo(listNode, listEdges, p)
+
     file.writelines(equaSource)
     file.writelines(equaDestination)
     file.writelines(equaNode)
@@ -240,7 +127,7 @@ def generateSubjectTo(listNode, listEdges, variant):
                 equa_destination.append(equa)
             else:
                 equa_node.append(equa)
-    return equa_source + equa_destination + equa_node
+    return equa_source, equa_destination, equa_node
 
 
 # def generateModel(listEdges, listNode, fileName, variant=0):
