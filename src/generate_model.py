@@ -116,7 +116,6 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
 
 
 
-
 def generateObjective(listEdges, variant):
     """
     Generate the objective function for the LP model.
@@ -139,7 +138,7 @@ def generateObjective(listEdges, variant):
             else:
                 to_optimize += f"- {abs(cost)} {edge.toString(i)}"
     
-    return to_optimize.replace("+", "", 1)
+    return to_optimize.replace("+ ", "", 1)  # Adjusted replace function
 
 
 def generateSubjectTo(listNode, listEdges, variant):
@@ -203,6 +202,7 @@ def generateModel(listEdges, listNode, fileName, variant=0):
         file.write("Subject To\n")
         file.writelines(generateSubjectTo(listNode, listEdges, variant))
         file.write("End")
+
 
 
 
