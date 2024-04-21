@@ -4,10 +4,8 @@ import file_to_data
 import Automatisation as auto
 
 def isFileInFolder(fileName):
-    # Get a list of all files in the folder
-    filesInFolder = os.listdir("instances")
-    # Check if the file's name matches any of the files in the folder
-    return fileName in filesInFolder
+    filesInFolder = os.listdir("instances") # Get a list of all files in the folder
+    return fileName in filesInFolder  # Check if the file's name matches any of the files in the folder
 
 def generateAggregateModel(listEdges,listNode,fileName) :
     newFileName = fileName+"_0.lp"
@@ -96,6 +94,7 @@ def generateModel(listEdges,listNode, fileName) :
     file.writelines(equaNode)
     file.write("End")
 
+
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     for edge in listEdges:
         edgeName = edge.toString(i)
@@ -107,8 +106,6 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     equa += ">=" + str(node.getDataI(i)) + "\n"
     return equa
 
-         
-
 
 def main(instanceName, p):
     if not os.path.exists('./instances/' + instanceName):   # Check if the file exists in the instances folder
@@ -119,10 +116,8 @@ def main(instanceName, p):
         print(resultFile)
         p = int(p)  # Convert p to an integer
         if p == 0:
-            print("p is 0")
             generateAggregateModel(listEdges,listNodes, resultFile)
         elif p ==1:
-            print("p is 1")
             generateModel(listEdges,listNodes, resultFile)
         else:  # P parameter does not match the expected values
             raise ValueError("Parameter p must be 0 or 1")
