@@ -3,8 +3,8 @@ from modelClass import Node
 
 
 def fileToData(fileName):
-    section = splitFileBySections(fileName)
-    return sectionToData(section)
+    sections = splitFileBySections(fileName)
+    return sectionToData(sections)
 
 
 def splitFileBySections(fileName):
