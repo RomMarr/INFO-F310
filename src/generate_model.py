@@ -20,7 +20,7 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     return equa
 
 
-def combinedTest(listEdges, p):
+def generateObjective(listEdges, p):
     toOptimize = "obj: "
     nbrObjet = len(listEdges[0].listCost) if p == 1 else 1
     for edge in listEdges:
@@ -35,18 +35,7 @@ def combinedTest(listEdges, p):
     return (toOptimize + "\n")
 
 
-def generateObjective(listEdges, variant):
-    to_optimize = "obj: "
-    nbr_objet = len(listEdges[0].listCost) if variant == 1 else 1
-    
-    for edge in listEdges:
-        for i in range(nbr_objet):
-            cost = edge.medianCost if variant == 0 else edge.listCost[i]
-            if cost >= 0:
-                to_optimize += f"+ {cost} {edge.toString(i)}"
-            else:
-                to_optimize += f"- {abs(cost)} {edge.toString(i)}"
-    return to_optimize.replace("+ ", "", 1)  # Adjusted replace function
+
 
 
 def generateSubjectTo(listNode, listEdges, variant):
@@ -83,8 +72,7 @@ def generateModel(listEdges, listNode, fileName, variant=0):
     new_file_name = f"{fileName}_{variant}.lp"
     with open(new_file_name, "w") as file:
         file.write("Minimize\n")
-        file.write(combinedTest(listEdges, variant))
-        #file.write(generateObjective(listEdges, variant) + "\n")
+        file.write(generateObjective(listEdges, variant))
         file.write("Subject To\n")
         file.writelines(generateSubjectTo(listNode, listEdges, variant))
         file.write("End")
@@ -111,4 +99,3 @@ if __name__ == '__main__':
     auto.convertToSol("./")
     auto.showResults()
     #main(instanceName, p)
-

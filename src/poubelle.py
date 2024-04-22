@@ -110,3 +110,16 @@ class Destination :
 
 #     toOptimize = toOptimize.replace("+","",1)
 #     return (toOptimize + "\n")
+
+# def generateObjective(listEdges, variant):
+#     to_optimize = "obj: "
+#     nbr_objet = len(listEdges[0].listCost) if variant == 1 else 1
+    
+#     for edge in listEdges:
+#         for i in range(nbr_objet):
+#             cost = edge.medianCost if variant == 0 else edge.listCost[i]
+#             if cost >= 0:
+#                 to_optimize += f"+ {cost} {edge.toString(i)}"
+#             else:
+#                 to_optimize += f"- {abs(cost)} {edge.toString(i)}"
+#     return to_optimize.replace("+ ", "", 1)  # Adjusted replace function
