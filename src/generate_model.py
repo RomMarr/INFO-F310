@@ -35,9 +35,6 @@ def generateObjective(listEdges, p):
     return (toOptimize + "\n")
 
 
-
-
-
 def generateSubjectTo(listNode, listEdges, variant):
     counter_node = 0
     counter_source = 0
