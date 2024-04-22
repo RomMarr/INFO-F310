@@ -7,57 +7,6 @@ def isFileInFolder(fileName):
     filesInFolder = os.listdir("instances") # Get a list of all files in the folder
     return fileName in filesInFolder  # Check if the file's name matches any of the files in the folder
 
-# def generateAggregateModel(listEdges,listNode,fileName, p) :
-#     newFileName = fileName+"_0.lp"
-#     file = open(newFileName, "w") 
-#     file.write("Minimize\n")
-    
-    
-#     toOptimize = "obj: "
-#     for edge in listEdges:
-#         if edge.medianCost >=0:
-#             toOptimize += "+ " + str(edge.medianCost) +" " + edge.toString()
-#         else:
-#             toOptimize += "- " + str(abs(edge.medianCost)) +" " + edge.toString()
-#     toOptimize = toOptimize.replace("+","",1)
-#     file.write(toOptimize + "\n")
-#     #file.write(generateObjective(listEdges, p) + "\n")
-
-
-#     file.write("Subject To\n")
-#     equaSource, equaDestination, equaNode = generateSubjectTo(listNode, listEdges, p)
-
-#     file.writelines(equaSource)
-#     file.writelines(equaDestination)
-#     file.writelines(equaNode)
-#     file.write("End")
-
-# def generateModel(listEdges,listNode, fileName, p) :
-#     newFileName = fileName+"_1.lp"
-#     file = open(newFileName, "w")  
-#     file.write("Minimize\n")
-
-    
-    # toOptimize = "obj: "
-    # nbrObjet = len(listEdges[0].listCost)
-    # for edge in listEdges:
-    #     for i in range(nbrObjet) :
-    #         if (edge.listCost[i]>=0):
-    #             toOptimize += "+ " + str(edge.listCost[i]) +" " + edge.toString(i)
-    #         else:
-    #             toOptimize += "- " + str(abs(edge.listCost[i])) +" " + edge.toString(i)
-    # toOptimize = toOptimize.replace("+","",1)
-    # file.write(toOptimize + "\n")
-
-    # file.write("Subject To\n")
-    
-    # equaSource, equaDestination, equaNode = generateSubjectTo(listNode, listEdges, p)
-
-    # file.writelines(equaSource)
-    # file.writelines(equaDestination)
-    # file.writelines(equaNode)
-    # file.write("End")
-
 
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     for edge in listEdges:
@@ -71,27 +20,17 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     return equa
 
 
-
-def test0(listEdges):
+def combinedTest(listEdges, p):
     toOptimize = "obj: "
-    for edge in listEdges:
-        if edge.medianCost >=0:
-            toOptimize += "+ " + str(edge.medianCost) +" " + edge.toString()
-        else:
-            toOptimize += "- " + str(abs(edge.medianCost)) +" " + edge.toString()
-    toOptimize = toOptimize.replace("+","",1)
-    return (toOptimize + "\n")
-
-
-def test1(listEdges):
-    toOptimize = "obj: "
-    nbrObjet = len(listEdges[0].listCost)
+    nbrObjet = len(listEdges[0].listCost) if p == 1 else 1
     for edge in listEdges:
         for i in range(nbrObjet) :
-            if (edge.listCost[i]>=0):
-                toOptimize += "+ " + str(edge.listCost[i]) +" " + edge.toString(i)
+            cost = edge.medianCost if p == 0 else edge.listCost[i]
+            edgeToString = edge.toString(i) if p == 1 else edge.toString()
+            if cost >= 0:
+                toOptimize += "+ " + str(cost) +" " + edgeToString
             else:
-                toOptimize += "- " + str(abs(edge.listCost[i])) +" " + edge.toString(i)
+                toOptimize += "- " + str(abs(cost)) +" " + edgeToString
     toOptimize = toOptimize.replace("+","",1)
     return (toOptimize + "\n")
 
@@ -144,17 +83,11 @@ def generateModel(listEdges, listNode, fileName, variant=0):
     new_file_name = f"{fileName}_{variant}.lp"
     with open(new_file_name, "w") as file:
         file.write("Minimize\n")
-        if variant == 0:
-            file.write(test0(listEdges))
-        elif variant == 1:
-            file.write(test1(listEdges))
+        file.write(combinedTest(listEdges, variant))
         #file.write(generateObjective(listEdges, variant) + "\n")
         file.write("Subject To\n")
         file.writelines(generateSubjectTo(listNode, listEdges, variant))
         file.write("End")
-
-
-
 
 
 def main(instanceName, p):
@@ -165,10 +98,6 @@ def main(instanceName, p):
         resultFile = instanceName [:-4] 
         print(resultFile)
         p = int(p)  # Convert p to an integer
-        #if p == 0:
-        #    generateAggregateModel(listEdges,listNodes, resultFile, p)
-        #elif p ==1:
-        #    generateModel(listEdges,listNodes, resultFile, p)
         if p in [0, 1]:
             generateModel(listEdges,listNodes, resultFile, p)
         else:  # P parameter does not match the expected values
