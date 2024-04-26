@@ -4,6 +4,9 @@ import Automatisation as auto
 from statistics import median
 
 class Edge :
+    """
+    Edge class that contains the data of the edge
+    """
     def __init__(self,id,start,end):
         self.id = id
         self.start = start
@@ -30,6 +33,9 @@ class Edge :
         
         
 class Node : 
+    """
+    Node class that contains the data of the node
+    """
     def __init__(self,id,x,y):
         self.id = id
         self.x = x
@@ -64,12 +70,10 @@ class Node :
             return self.listData[i]
         
 
-def fileToData(fileName):
-    sections = splitFileBySections(fileName)
-    return sectionToData(sections)
-
-
 def splitFileBySections(fileName):
+    """
+    Split the file into sections based different parts of the txt file
+    """
     sections = []
     currentSection = []
     with open(fileName, 'r') as file:
@@ -87,6 +91,9 @@ def splitFileBySections(fileName):
     return sections
 
 def sectionToData(sections):
+    """
+    Transform each section into the data needed to create the model
+    """
     nbrItems = int(sections[0][0].split()[1]) # get the element after the space (ex : ITEMS 2 -> nbrItems = 2)
     listNodes = createNodes(sections[1])
     listEdges = createEdges(sections[2], nbrItems)
@@ -95,14 +102,19 @@ def sectionToData(sections):
     return listEdges,listNodes
 
 def createNodes(section):
+    """
+    Create the nodes with the data from the section
+    """
     listNodes = []
     for line in section[2:]:
         splitedLine = line.split()
         listNodes.append(Node(int(splitedLine[0]),float(splitedLine[1]), float(splitedLine[2])))
     return listNodes
 
-
 def createEdges(section, nbrItems):
+    """
+    Create the edges with the data from the section
+    """
     listEdges = []
     for line in section[2:]:
         splitedLine = line.split()
@@ -113,6 +125,9 @@ def createEdges(section, nbrItems):
     return listEdges
 
 def updateNodeSources(section, listNodes, nbrItems):
+    """
+    Update the source nodes with the data from the section
+    """
     for line in section[2:]:
         splitedLine = line.split()
         sourceID = int(splitedLine[0])
@@ -123,6 +138,9 @@ def updateNodeSources(section, listNodes, nbrItems):
                     node.add_data(-int(splitedLine[i+1]))
 
 def updateNodeDestinations(section, listNodes, nbrItems):
+    """
+    Update the destination nodes with the data from the section
+    """
     for line in section[2:]:
         splitedLine = line.split()
         destinationID = int(splitedLine[0])
@@ -133,13 +151,17 @@ def updateNodeDestinations(section, listNodes, nbrItems):
                     node.add_data(int(splitedLine[i +1]))
 
 def isFileInFolder(fileName):
+    # Check if the file exists in the instances folder
     filesInFolder = os.listdir("instances") # Get a list of all files in the folder
     return fileName in filesInFolder  # Check if the file's name matches any of the files in the folder
 
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
+    """
+    Write the equation for the given node
+    """
     for edge in listEdges:
         edgeName = edge.toString(i)
-        if edge.start != edge.end:
+        if edge.start != edge.end:  # If the edge is not a loop
             if edge.end == node.id :
                 equa += "+ " + edgeName
             elif edge.start == node.id :
@@ -147,8 +169,10 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     equa += ">=" + str(node.getDataI(i)) + "\n"
     return equa
 
-
 def generateObjective(listEdges, p):
+    """
+    Generate the part of the model that defines the objective function
+    """
     toOptimize = "obj: "
     nbrObjet = len(listEdges[0].listCost) if p == 1 else 1
     for edge in listEdges:
@@ -162,8 +186,10 @@ def generateObjective(listEdges, p):
     toOptimize = toOptimize.replace("+","",1)
     return (toOptimize + "\n")
 
-
 def generateSubjectTo(listNode, listEdges, variant):
+    """
+    Generate the part of the model that defines the constraints
+    """
     counter_node = 0
     counter_source = 0
     counter_destination = 0
@@ -180,10 +206,8 @@ def generateSubjectTo(listNode, listEdges, variant):
                 equa = f"d_{counter_destination}: "
             else:
                 counter_node += 1
-                equa = f"n_{counter_node}: "
-                
+                equa = f"n_{counter_node}: "  
             equa = writeEqua(node, equa, listEdges, i) if variant == 1 else writeEqua(node, equa, listEdges)
-            
             if node.type == "Source":
                 equa_source.append(equa)
             elif node.type == "Destination":
@@ -192,8 +216,10 @@ def generateSubjectTo(listNode, listEdges, variant):
                 equa_node.append(equa)
     return equa_source+ equa_destination +equa_node
 
-
 def generateModel(listEdges, listNode, fileName, variant=0):
+    """ 
+    Generate the model into the .lp file
+    """
     new_file_name = f"{fileName}_{variant}.lp"
     with open(new_file_name, "w") as file:
         file.write("Minimize\n")
@@ -204,10 +230,15 @@ def generateModel(listEdges, listNode, fileName, variant=0):
 
 
 def main(instanceName, p):
-    if not os.path.exists('./instances/' + instanceName):   # Check if the file exists in the instances folder
+    """
+    Control the flow of the program, with the good parameters raise an error if the parameters are not correct
+    """
+    fileName = './instances/' +instanceName
+    if not os.path.exists(fileName):   # Check if the file exists in the instances folder
         raise ValueError("File name does not exist in instances folder")
     else: 
-        listEdges,listNodes = fileToData('./instances/' +instanceName)
+        sections = splitFileBySections(fileName)
+        listEdges,listNodes = sectionToData(sections)
         resultFile = instanceName [:-4] 
         p = int(p)  # Convert p to an integer
         if p in [0, 1]:
