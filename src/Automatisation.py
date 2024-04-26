@@ -52,3 +52,9 @@ def testTout():
         for name in files:
             main(name, 0)
             main(name, 1)
+
+
+if __name__ == '__main__':
+    testTout()
+    convertToSol("./")
+    showResults()

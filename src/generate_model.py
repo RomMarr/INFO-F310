@@ -1,6 +1,5 @@
 import sys
 import os
-import Automatisation as auto
 from statistics import median
 
 class Edge :
@@ -240,9 +239,6 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    #instanceName = sys.argv[1]  # instance's file's name
-    #p = sys.argv[2]  # p parameter
-    auto.testTout()
-    auto.convertToSol("./")
-    auto.showResults()
-    #main(instanceName, p)
+    instanceName = sys.argv[1]  # instance's file's name
+    p = sys.argv[2]  # p parameter
+    main(instanceName, p)
