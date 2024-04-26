@@ -14,18 +14,15 @@ class Edge :
         self.listCost = []
         self.medianCost = 0
     
-    def add_cost(self,costItem):
+    def addCost(self,costItem):
         self.listCost.append(costItem)
-        self.updateMedianCost()
-    
-    def updateMedianCost(self):
-        sumCost = 0
-        for cost in self.listCost:
-            sumCost+=cost
-        self.medianCost = median(self.listCost)
-        
+        self.medianCost = median(self.listCost) # update the median cost
+
+    def getMedianCost(self):
+        return self.medianCost
     
     def toString(self,i=None): # i == None when no i parameter is given -> i == nbrItems
+        # return the edge's name
         if i == None:
             return "E%s_%s_%s" % (self.id,self.start,self.end)
         else : 
@@ -41,6 +38,7 @@ class Node :
         self.x = x
         self.y = y
         self.listData = []
+        self.totalCapacity = 0
         self.type = "Node"
 
     def changeTypeToSource(self):
@@ -52,18 +50,14 @@ class Node :
     def getID(self):
         return self.id
 
-    def add_data (self,data):
-        self.listData.append(data)
-    
-    def getTotalCapacity(self):
-        totalCapacity = 0
-        for cap in self.listData:
-            totalCapacity+=cap
-        return totalCapacity
+    def addData (self,data):
+        self.listData.append(data) # add the data to the list
+        self.totalCapacity += data # update the total capacity
 
-    def getDataI(self,i = None):
+    def getData(self,i = None):
+        # return the data of the node
         if i == None:
-            return self.getTotalCapacity()
+            return self.totalCapacity
         elif self.listData == []:
             return 0
         else:
@@ -76,7 +70,7 @@ def splitFileBySections(fileName):
     """
     sections = []
     currentSection = []
-    with open(fileName, 'r') as file:
+    with open(fileName, 'r') as file: # Open the file in read mode
         for line in file:
             line = line.strip()  # Remove leading/trailing whitespace
             if line:  # Non-empty line
@@ -92,7 +86,7 @@ def splitFileBySections(fileName):
 
 def sectionToData(sections):
     """
-    Transform each section into the data needed to create the model
+    Transform each section into the data needed to create the model and returns the list of edges and nodes
     """
     nbrItems = int(sections[0][0].split()[1]) # get the element after the space (ex : ITEMS 2 -> nbrItems = 2)
     listNodes = createNodes(sections[1])
@@ -106,7 +100,7 @@ def createNodes(section):
     Create the nodes with the data from the section
     """
     listNodes = []
-    for line in section[2:]:
+    for line in section[2:]: # Skip the first two lines
         splitedLine = line.split()
         listNodes.append(Node(int(splitedLine[0]),float(splitedLine[1]), float(splitedLine[2])))
     return listNodes
@@ -116,11 +110,11 @@ def createEdges(section, nbrItems):
     Create the edges with the data from the section
     """
     listEdges = []
-    for line in section[2:]:
+    for line in section[2:]: # Skip the first two lines
         splitedLine = line.split()
         edge = Edge(int(splitedLine[0]),int(splitedLine[1]), int(splitedLine[2]))
-        for i in range(nbrItems):
-            edge.add_cost(int(splitedLine[i+3]))
+        for i in range(nbrItems): # Add the cost for each item
+            edge.addCost(int(splitedLine[i+3]))
         listEdges.append(edge)
     return listEdges
 
@@ -128,32 +122,27 @@ def updateNodeSources(section, listNodes, nbrItems):
     """
     Update the source nodes with the data from the section
     """
-    for line in section[2:]:
+    for line in section[2:]:  # Skip the first two lines
         splitedLine = line.split()
         sourceID = int(splitedLine[0])
         for node in listNodes:
             if node.getID() == sourceID: 
                 node.changeTypeToSource()
-                for i in range(nbrItems):
-                    node.add_data(-int(splitedLine[i+1]))
+                for i in range(nbrItems):  # Add the data for each item
+                    node.addData(-int(splitedLine[i+1]))
 
 def updateNodeDestinations(section, listNodes, nbrItems):
     """
     Update the destination nodes with the data from the section
     """
-    for line in section[2:]:
+    for line in section[2:]:  # Skip the first two lines
         splitedLine = line.split()
         destinationID = int(splitedLine[0])
         for node in listNodes:
             if node.getID() == destinationID: 
                 node.changeTypeToDestination()
-                for i in range(nbrItems):
-                    node.add_data(int(splitedLine[i +1]))
-
-def isFileInFolder(fileName):
-    # Check if the file exists in the instances folder
-    filesInFolder = os.listdir("instances") # Get a list of all files in the folder
-    return fileName in filesInFolder  # Check if the file's name matches any of the files in the folder
+                for i in range(nbrItems):  # Add the data for each item
+                    node.addData(int(splitedLine[i +1]))
 
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     """
@@ -162,11 +151,11 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     for edge in listEdges:
         edgeName = edge.toString(i)
         if edge.start != edge.end:  # If the edge is not a loop
-            if edge.end == node.id :
+            if edge.end == node.id :  # If the edge is going to the node
                 equa += "+ " + edgeName
-            elif edge.start == node.id :
+            elif edge.start == node.id :  # If the edge is coming from the node
                 equa += "- " + edgeName
-    equa += ">=" + str(node.getDataI(i)) + "\n"
+    equa += ">=" + str(node.getData(i)) + "\n"  # Add the data of the node
     return equa
 
 def generateObjective(listEdges, p):
@@ -177,55 +166,58 @@ def generateObjective(listEdges, p):
     nbrObjet = len(listEdges[0].listCost) if p == 1 else 1
     for edge in listEdges:
         for i in range(nbrObjet) :
-            cost = edge.medianCost if p == 0 else edge.listCost[i]
-            edgeToString = edge.toString(i) if p == 1 else edge.toString()
+            cost = edge.getMedianCost() if p == 0 else edge.listCost[i]  # Get the cost of the edge
+            edgeToString = edge.toString(i) if p == 1 else edge.toString()  # Get the edge's name
             if cost >= 0:
-                toOptimize += "+ " + str(cost) +" " + edgeToString
+                toOptimize += "+ " + str(cost) +" " + edgeToString 
             else:
                 toOptimize += "- " + str(abs(cost)) +" " + edgeToString
-    toOptimize = toOptimize.replace("+","",1)
+    toOptimize = toOptimize.replace("+","",1)  # Remove the first +
     return (toOptimize + "\n")
 
-def generateSubjectTo(listNode, listEdges, variant):
+def generateSubjectTo(listNode, listEdges, p):
     """
-    Generate the part of the model that defines the constraints
+    Generate the part of the model that defines the constraints and return the list of equations
     """
-    counter_node = 0
-    counter_source = 0
-    counter_destination = 0
-    equa_node = []
-    equa_source = []
-    equa_destination = []
+    counterNode = 0 
+    counterSource = 0
+    counterDestination = 0
+    equaNode = []  # List of equations for the nodes
+    equaSource = []  # List of equations for the sources
+    equaDestination = []  # List of equations for the destinations
     for node in listNode:
-        for i in range(len(listEdges[0].listCost) if variant == 1 else 1):
+        for i in range(len(listEdges[0].listCost) if p == 1 else 1):  # Loop for each item
             if node.type == "Source":
-                counter_source += 1
-                equa = f"s_{counter_source}: "
+                counterSource += 1
+                equa = f"s_{counterSource}: "
             elif node.type == "Destination":
-                counter_destination += 1
-                equa = f"d_{counter_destination}: "
+                counterDestination += 1
+                equa = f"d_{counterDestination}: "
             else:
-                counter_node += 1
-                equa = f"n_{counter_node}: "  
-            equa = writeEqua(node, equa, listEdges, i) if variant == 1 else writeEqua(node, equa, listEdges)
-            if node.type == "Source":
-                equa_source.append(equa)
-            elif node.type == "Destination":
-                equa_destination.append(equa)
-            else:
-                equa_node.append(equa)
-    return equa_source+ equa_destination +equa_node
+                counterNode += 1
+                equa = f"n_{counterNode}: "  
+            
+            # Write the equation for the node
+            equa = writeEqua(node, equa, listEdges, i) if p == 1 else writeEqua(node, equa, listEdges)
 
-def generateModel(listEdges, listNode, fileName, variant=0):
+            if node.type == "Source":
+                equaSource.append(equa)  # Add the equation to the list of source equations
+            elif node.type == "Destination":
+                equaDestination.append(equa)  # Add the equation to the list of destination equations
+            else:
+                equaNode.append(equa)  # Add the equation to the list of node equations
+    return equaSource+ equaDestination +equaNode
+
+def generateModel(listEdges, listNode, fileName, p=0):
     """ 
     Generate the model into the .lp file
     """
-    new_file_name = f"{fileName}_{variant}.lp"
-    with open(new_file_name, "w") as file:
+    newFileName = f"{fileName}_{p}.lp"  # Name of the .lp file
+    with open(newFileName, "w") as file:
         file.write("Minimize\n")
-        file.write(generateObjective(listEdges, variant))
+        file.write(generateObjective(listEdges, p))
         file.write("Subject To\n")
-        file.writelines(generateSubjectTo(listNode, listEdges, variant))
+        file.writelines(generateSubjectTo(listNode, listEdges, p))
         file.write("End")
 
 
@@ -233,7 +225,7 @@ def main(instanceName, p):
     """
     Control the flow of the program, with the good parameters raise an error if the parameters are not correct
     """
-    fileName = './instances/' +instanceName
+    fileName = './instances/' +instanceName  # add the path to the file
     if not os.path.exists(fileName):   # Check if the file exists in the instances folder
         raise ValueError("File name does not exist in instances folder")
     else: 
@@ -248,9 +240,9 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    instanceName = sys.argv[1]  # instance's file's name
-    p = sys.argv[2]  # p parameter
-    #auto.testTout()
-    #auto.convertToSol("./")
-    #auto.showResults()
-    main(instanceName, p)
+    #instanceName = sys.argv[1]  # instance's file's name
+    #p = sys.argv[2]  # p parameter
+    auto.testTout()
+    auto.convertToSol("./")
+    auto.showResults()
+    #main(instanceName, p)
