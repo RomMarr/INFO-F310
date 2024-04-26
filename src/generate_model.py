@@ -13,12 +13,21 @@ class Edge :
         self.listCost = []
         self.medianCost = 0
     
+    def getMedianCost(self):
+        return self.medianCost
+    
+    def getStart(self):
+        return self.start
+    
+    def getEnd(self):
+        return self.end
+    
+    def getCost(self,i):
+        return self.listCost[i]
+    
     def addCost(self,costItem):
         self.listCost.append(costItem)
         self.medianCost = median(self.listCost) # update the median cost
-
-    def getMedianCost(self):
-        return self.medianCost
     
     def toString(self,i=None): # i == None when no i parameter is given -> i == nbrItems
         # return the edge's name
@@ -39,20 +48,13 @@ class Node :
         self.listData = []
         self.totalCapacity = 0
         self.type = "Node"
-
-    def changeTypeToSource(self):
-        self.type = "Source"
-
-    def changeTypeToDestination(self):
-        self.type = "Destination"
-
+    
     def getID(self):
         return self.id
-
-    def addData (self,data):
-        self.listData.append(data) # add the data to the list
-        self.totalCapacity += data # update the total capacity
-
+    
+    def getType(self):
+        return self.type
+    
     def getData(self,i = None):
         # return the data of the node
         if i == None:
@@ -61,6 +63,16 @@ class Node :
             return 0
         else:
             return self.listData[i]
+
+    def changeTypeToSource(self):
+        self.type = "Source"
+
+    def changeTypeToDestination(self):
+        self.type = "Destination"
+
+    def addData (self,data):
+        self.listData.append(data) # add the data to the list
+        self.totalCapacity += data # update the total capacity
         
 
 def splitFileBySections(fileName):
@@ -149,10 +161,10 @@ def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is gi
     """
     for edge in listEdges:
         edgeName = edge.toString(i)
-        if edge.start != edge.end:  # If the edge is not a loop
-            if edge.end == node.id :  # If the edge is going to the node
+        if edge.getStart() != edge.getEnd():  # If the edge is not a loop
+            if edge.getEnd() == node.getID() :  # If the edge is going to the node
                 equa += "+ " + edgeName
-            elif edge.start == node.id :  # If the edge is coming from the node
+            elif edge.getStart() == node.getID() :  # If the edge is coming from the node
                 equa += "- " + edgeName
     equa += ">=" + str(node.getData(i)) + "\n"  # Add the data of the node
     return equa
@@ -165,7 +177,7 @@ def generateObjective(listEdges, p):
     nbrObjet = len(listEdges[0].listCost) if p == 1 else 1
     for edge in listEdges:
         for i in range(nbrObjet) :
-            cost = edge.getMedianCost() if p == 0 else edge.listCost[i]  # Get the cost of the edge
+            cost = edge.getMedianCost() if p == 0 else edge.getCost(i)  # Get the cost of the edge
             edgeToString = edge.toString(i) if p == 1 else edge.toString()  # Get the edge's name
             if cost >= 0:
                 toOptimize += "+ " + str(cost) +" " + edgeToString 
@@ -186,10 +198,10 @@ def generateSubjectTo(listNode, listEdges, p):
     equaDestination = []  # List of equations for the destinations
     for node in listNode:
         for i in range(len(listEdges[0].listCost) if p == 1 else 1):  # Loop for each item
-            if node.type == "Source":
+            if node.getType() == "Source":
                 counterSource += 1
                 equa = f"s_{counterSource}: "
-            elif node.type == "Destination":
+            elif node.getType() == "Destination":
                 counterDestination += 1
                 equa = f"d_{counterDestination}: "
             else:
@@ -199,9 +211,9 @@ def generateSubjectTo(listNode, listEdges, p):
             # Write the equation for the node
             equa = writeEqua(node, equa, listEdges, i) if p == 1 else writeEqua(node, equa, listEdges)
 
-            if node.type == "Source":
+            if node.getType() == "Source":
                 equaSource.append(equa)  # Add the equation to the list of source equations
-            elif node.type == "Destination":
+            elif node.getType() == "Destination":
                 equaDestination.append(equa)  # Add the equation to the list of destination equations
             else:
                 equaNode.append(equa)  # Add the equation to the list of node equations
