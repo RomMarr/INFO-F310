@@ -1,12 +1,140 @@
 import sys
 import os
-import file_to_data
 import Automatisation as auto
+from statistics import median
+
+class Edge :
+    def __init__(self,id,start,end):
+        self.id = id
+        self.start = start
+        self.end = end
+        self.listCost = []
+        self.medianCost = 0
+    
+    def add_cost(self,costItem):
+        self.listCost.append(costItem)
+        self.updateMedianCost()
+    
+    def updateMedianCost(self):
+        sumCost = 0
+        for cost in self.listCost:
+            sumCost+=cost
+        self.medianCost = median(self.listCost)
+        
+    
+    def toString(self,i=None): # i == None when no i parameter is given -> i == nbrItems
+        if i == None:
+            return "E%s_%s_%s" % (self.id,self.start,self.end)
+        else : 
+            return "E%s_O%s_%s_%s" % (self.id, i,self.start,self.end)
+        
+        
+class Node : 
+    def __init__(self,id,x,y):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.listData = []
+        self.type = "Node"
+
+    def changeTypeToSource(self):
+        self.type = "Source"
+
+    def changeTypeToDestination(self):
+        self.type = "Destination"
+
+    def getID(self):
+        return self.id
+
+    def add_data (self,data):
+        self.listData.append(data)
+    
+    def getTotalCapacity(self):
+        totalCapacity = 0
+        for cap in self.listData:
+            totalCapacity+=cap
+        return totalCapacity
+
+    def getDataI(self,i = None):
+        if i == None:
+            return self.getTotalCapacity()
+        elif self.listData == []:
+            return 0
+        else:
+            return self.listData[i]
+        
+
+def fileToData(fileName):
+    sections = splitFileBySections(fileName)
+    return sectionToData(sections)
+
+
+def splitFileBySections(fileName):
+    sections = []
+    currentSection = []
+    with open(fileName, 'r') as file:
+        for line in file:
+            line = line.strip()  # Remove leading/trailing whitespace
+            if line:  # Non-empty line
+                currentSection.append(line)
+            else:  # Blank line, start a new section
+                if currentSection:
+                    sections.append(currentSection)
+                    currentSection = []
+    # Append the last section
+    if currentSection:
+        sections.append(currentSection)
+    return sections
+
+def sectionToData(sections):
+    nbrItems = int(sections[0][0].split()[1]) # get the element after the space (ex : ITEMS 2 -> nbrItems = 2)
+    listNodes = createNodes(sections[1])
+    listEdges = createEdges(sections[2], nbrItems)
+    updateNodeSources(sections[3], listNodes, nbrItems)
+    updateNodeDestinations(sections[4], listNodes, nbrItems)
+    return listEdges,listNodes
+
+def createNodes(section):
+    listNodes = []
+    for line in section[2:]:
+        splitedLine = line.split()
+        listNodes.append(Node(int(splitedLine[0]),float(splitedLine[1]), float(splitedLine[2])))
+    return listNodes
+
+
+def createEdges(section, nbrItems):
+    listEdges = []
+    for line in section[2:]:
+        splitedLine = line.split()
+        edge = Edge(int(splitedLine[0]),int(splitedLine[1]), int(splitedLine[2]))
+        for i in range(nbrItems):
+            edge.add_cost(int(splitedLine[i+3]))
+        listEdges.append(edge)
+    return listEdges
+
+def updateNodeSources(section, listNodes, nbrItems):
+    for line in section[2:]:
+        splitedLine = line.split()
+        sourceID = int(splitedLine[0])
+        for node in listNodes:
+            if node.getID() == sourceID: 
+                node.changeTypeToSource()
+                for i in range(nbrItems):
+                    node.add_data(-int(splitedLine[i+1]))
+
+def updateNodeDestinations(section, listNodes, nbrItems):
+    for line in section[2:]:
+        splitedLine = line.split()
+        destinationID = int(splitedLine[0])
+        for node in listNodes:
+            if node.getID() == destinationID: 
+                node.changeTypeToDestination()
+                for i in range(nbrItems):
+                    node.add_data(int(splitedLine[i +1]))
 
 def isFileInFolder(fileName):
     filesInFolder = os.listdir("instances") # Get a list of all files in the folder
     return fileName in filesInFolder  # Check if the file's name matches any of the files in the folder
-
 
 def writeEqua(node,equa,listEdges,i=None): # i == None when no i parameter is given
     for edge in listEdges:
@@ -79,9 +207,8 @@ def main(instanceName, p):
     if not os.path.exists('./instances/' + instanceName):   # Check if the file exists in the instances folder
         raise ValueError("File name does not exist in instances folder")
     else: 
-        listEdges,listNodes = file_to_data.fileToData('./instances/' +instanceName)
+        listEdges,listNodes = fileToData('./instances/' +instanceName)
         resultFile = instanceName [:-4] 
-        print(resultFile)
         p = int(p)  # Convert p to an integer
         if p in [0, 1]:
             generateModel(listEdges,listNodes, resultFile, p)
@@ -90,9 +217,9 @@ def main(instanceName, p):
 
 
 if __name__ == '__main__':
-    #instanceName = sys.argv[1]  # instance's file's name
-    #p = sys.argv[2]  # p parameter
-    auto.testTout()
-    auto.convertToSol("./")
-    auto.showResults()
-    #main(instanceName, p)
+    instanceName = sys.argv[1]  # instance's file's name
+    p = sys.argv[2]  # p parameter
+    #auto.testTout()
+    #auto.convertToSol("./")
+    #auto.showResults()
+    main(instanceName, p)

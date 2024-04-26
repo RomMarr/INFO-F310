@@ -2,7 +2,7 @@ import pytest
 import subprocess
 
 INSTANCES_FOLDER = "instances"
-OUTPUT_FOLDER = "output"
+OUTPUT_FOLDER = "."
 RESULTS = {
     "test_0": 150,
     "test_1": 150,
