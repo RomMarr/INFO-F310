@@ -17,8 +17,8 @@ En supposant que le dossier instances soit au même niveau que le fichier genera
 
 ### 1. Lancer la génération des modèles
 
-instance_name : représente le problème à modéliser (doit se trouver dans le dossier instances).
-p : 0 pour un modèle agrégé et 1 pour un modèle désagrégé
+- instance_name : représente le problème à modéliser (doit se trouver dans le dossier instances).
+- p : 0 pour un modèle agrégé et 1 pour un modèle désagrégé
 
 ```bash
 python3 genrate_model.py instance_name.txt p
