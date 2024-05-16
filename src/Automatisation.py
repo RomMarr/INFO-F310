@@ -33,6 +33,7 @@ def showResults():
 def convertToSol(directory):
     tempMin = 999999999
     tempsMax = 0
+    tempTot = 0
     with open("SolvingTimeResults.txt", "w") as f:
         for filename in sorted(os.listdir(directory)):
             if filename.endswith(".lp"):
@@ -47,9 +48,12 @@ def convertToSol(directory):
                 if endTime - beginTime > tempsMax:
                     tempsMax = endTime - beginTime
                 f.write(f"{sol_file} : {endTime - beginTime} \n")
+                tempTot += endTime - beginTime
                 print(f"Solution saved to '{sol_file}'.")
-        f.write(f"Temps min : {tempMin} \n")
+        f.write(f"\nTemps min : {tempMin} \n")
         f.write(f"Temps max : {tempsMax} \n")
+        f.write(f"Temps moyen : {tempTot/44} \n")
+        f.write(f"Temps total : {tempTot} \n")
     f.close()
 
 def solve_lp_file(lp_file, sol_file):
