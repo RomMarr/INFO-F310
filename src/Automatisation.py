@@ -1,6 +1,7 @@
 import os
 import subprocess
 from generate_model import main
+import time
 
 
 directory = ''
@@ -48,10 +49,18 @@ def solve_lp_file(lp_file, sol_file):
 
 def testTout():
     root = "./instances/"
-    for path, subdir, files in os.walk(root):
-        for name in files:
-            main(name, 0)
-            main(name, 1)
+    with open("results.txt", "w") as f:
+        for path, subdir, files in os.walk(root):
+            for name in files:
+                beginTime_0= time.time()
+                main(name, 0)
+                endTime_0= time.time()
+                f.write(f"{name}_0 : {endTime_0 - beginTime_0} \n")
+                beginTime_1= time.time()
+                main(name, 1)
+                endTime_1= time.time()
+                f.write(f"{name}_1 : {endTime_1 - beginTime_1} \n")
+    f.close()
 
 
 if __name__ == '__main__':
