@@ -24,17 +24,14 @@ En supposant que le dossier instances soit au même niveau que le fichier genera
 python3 genrate_model.py instance_name.txt p
 ```
 
-<!-- psql -h 127.0.0.1 -d polmarnette -f ddl.sql
+### 2. Lancer la résolution des problèmes
 
-psql -h 127.0.0.1 -d romain -f ddl.sql
-
-psql -h 127.0.0.1 -U postgres -d postgres -f ddl.sql
-mdp = x ou 12345 -->
-
-### 2. Lancer les scripts d'importation des données
-
-Cette partie requiert l'installation de Python 3 avec les modules [psycopg2](https://pypi.org/project/psycopg2/).
+Une fois le fichier.lp (au format CPLEX LP) généré, il ne reste plus qu'a le résoudre.
 
 ```bash
-python3 imports/import_all.py
+glpsol --lp instance_name.lp -o instance_name_p.sol
 ```
+
+ATTENTION : 
+- instance_name doit être le nom d'un fichier.lp existant
+- p doit être la valeur du modèle existant.
