@@ -9,7 +9,7 @@ Noé Vekemans - 000475625
 ## Structure du projet
 
 - `generate_model.py` : Script de génération des fichiers.lp
-- `rapport.pdf` : Le rapport du projet
+- `rapport.pdf` : Le rapport scientifique du projet.
   
 ## Utilisation
 
