@@ -31,13 +31,17 @@ def showResults():
                     "Filename: ", filename + bcolors.ENDC + " " + lines[5], end="")
                 
 def convertToSol(directory):
-    for filename in sorted(os.listdir(directory)):
-        if filename.endswith(".lp"):
-            print("Solving LP file:", filename)
-            lp_file = os.path.join(directory, filename)
-            sol_file = os.path.splitext(lp_file)[0] + ".sol"
-            solve_lp_file(lp_file, sol_file)
-            print(f"Solution saved to '{sol_file}'.")
+    with open("SolvingTimeResults.txt", "w") as f:
+        for filename in sorted(os.listdir(directory)):
+            if filename.endswith(".lp"):
+                print("Solving LP file:", filename)
+                lp_file = os.path.join(directory, filename)
+                sol_file = os.path.splitext(lp_file)[0] + ".sol"
+                beginTime= time.time()
+                solve_lp_file(lp_file, sol_file)
+                endTime= time.time()
+                f.write(f"{sol_file} : {endTime - beginTime} \n")
+                print(f"Solution saved to '{sol_file}'.")
 
 def solve_lp_file(lp_file, sol_file):
     # Construct the command
@@ -49,7 +53,7 @@ def solve_lp_file(lp_file, sol_file):
 
 def testTout():
     root = "./instances/"
-    with open("results.txt", "w") as f:
+    with open("GenerationTimeResults.txt", "w") as f:
         for path, subdir, files in os.walk(root):
             for name in files:
                 beginTime_0= time.time()
