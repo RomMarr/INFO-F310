@@ -13,12 +13,15 @@ Noé Vekemans - 000475625
   
 ## Utilisation
 
-En supposant que le dossier instance soit au même niveau que le fichier generate_model.py
+En supposant que le dossier instances soit au même niveau que le fichier generate_model.py
 
-### 1. Lancer la création des tables
+### 1. Lancer la génération des modèles
+
+instance_name : représente le problème à modéliser (doit se trouver dans le dossier instances).
+p : 0 pour un modèle agrégé et 1 pour un modèle désagrégé
 
 ```bash
-psql -h <host> -U <username> -d <database_name> -f ddl.sql
+python3 genrate_model.py instance_name.txt p
 ```
 
 <!-- psql -h 127.0.0.1 -d polmarnette -f ddl.sql
