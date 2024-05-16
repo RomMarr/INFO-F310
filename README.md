@@ -10,10 +10,10 @@ Noé Vekemans - 000475625
 
 - `generate_model.py` : Script de génération des fichiers.lp
 - `/rapport.pdf` : Le rapport du projet
-- 
+  
 ## Utilisation
 
-En supposant qu'une base de données postgresql soit déjà installée et que le service soit lancé.
+En supposant que le dossier instance soit au même niveau que le fichier generate_model.py
 
 ### 1. Lancer la création des tables
 
@@ -34,14 +34,4 @@ Cette partie requiert l'installation de Python 3 avec les modules [psycopg2](htt
 
 ```bash
 python3 imports/import_all.py
-```
-
-### 3. Lancer l'interface graphique
-
-Cette partie requiert l'installation de Node.js et de Yarn.
-
-```bash
-cd web
-yarn install
-yarn dev
 ```
