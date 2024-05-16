@@ -34,4 +34,4 @@ glpsol --lp instance_name.lp -o instance_name_p.sol
 
 ATTENTION : 
 - instance_name doit être le nom d'un fichier.lp existant
-- p doit être la valeur du modèle existant.
+- p doit être la valeur du modèle existant pour l'instance_name choisi.
