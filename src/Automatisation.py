@@ -31,6 +31,8 @@ def showResults():
                     "Filename: ", filename + bcolors.ENDC + " " + lines[5], end="")
                 
 def convertToSol(directory):
+    tempMin = 999999999
+    tempsMax = 0
     with open("SolvingTimeResults.txt", "w") as f:
         for filename in sorted(os.listdir(directory)):
             if filename.endswith(".lp"):
@@ -40,8 +42,15 @@ def convertToSol(directory):
                 beginTime= time.time()
                 solve_lp_file(lp_file, sol_file)
                 endTime= time.time()
+                if endTime - beginTime < tempMin:
+                    tempMin = endTime - beginTime
+                if endTime - beginTime > tempsMax:
+                    tempsMax = endTime - beginTime
                 f.write(f"{sol_file} : {endTime - beginTime} \n")
                 print(f"Solution saved to '{sol_file}'.")
+        f.write(f"Temps min : {tempMin} \n")
+        f.write(f"Temps max : {tempsMax} \n")
+    f.close()
 
 def solve_lp_file(lp_file, sol_file):
     # Construct the command
