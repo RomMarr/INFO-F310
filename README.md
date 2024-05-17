@@ -1,4 +1,4 @@
-# INFO-F310
+# INFO-F310 : Optimisation problèmes
 
 ## Membres du groupe
 
